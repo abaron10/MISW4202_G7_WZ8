@@ -2,33 +2,44 @@ import sys
 # sys.path.insert(0,"../../")
 from flask import Flask, jsonify , request
 app = Flask(__name__)
+from faker import Faker
+import random
+import requests
+import json
 
+
+data_factory = Faker()
+MONITOR_URL = "http://127.0.0.1:5000/"
 
 
 @app.route('/payment',methods=['POST'])
-def payment():
-    id = request.json["id_paciente"]
-    nombre_paciente = request.json["nombre_paciente"]
-    apellido_paciente = request.json["apellido_paciente"]
-    correo = request.json["correo"]
-    teléfono = request.json["teléfono"]
-    valor_pendiente = request.json["valor_pendiente"]
-    salida = boelano 
-
-    return jsonify(res)
-
-
-# def filterPrice(dic,name):
-#     for item in dic:
-#         if item["name"]==name:
-#             return item
+def run_experiment():
+    lis = []
+    for iteration in range(1,5):
+        lis.append(payment(iteration,
+                data_factory.name().split(" ")[0],
+                data_factory.name().split(" ")[1],
+                data_factory.email(),
+                "+57 " + str(random.randint(1000000, 9000000)),
+                random.randint(100000, 900000),
+                False))
+    return jsonify(lis)
 
 
 
-# @app.route('/price/<string:product_name>',methods=['GET'])
-# def ping2(product_name):
-#     res = filterPrice(products,product_name)
-#     return jsonify(res)
+def payment(id,name,lastname,email,phone_number,billing,exit_granted):
+
+    patient = {"id": id,
+                "name": name, 
+                "lastname": lastname, 
+                "email":email,
+                "phone_number":phone_number,
+                "billing":billing,
+                "exit_granted":exit_granted}
+
+    r = requests.post(url = MONITOR_URL + "/send_payment", data=patient)
+    return json.loads(r.content)
+    
 
 if __name__ == '__main__':
     app.run(debug=True,port=4000)

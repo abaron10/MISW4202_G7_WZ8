@@ -14,8 +14,20 @@ def ping():
 
 @app.route('/payment',methods=['POST'])
 def payment():
-    time.sleep(5000)
-    return "payment ok"
+    time.sleep(3)
+    patient = {"id":  request.form["id"],
+                "name":  request.form["name"],
+                "lastname":  request.form["lastname"],
+                "email": request.form["email"],
+                "phone_number":  request.form["phone_number"],
+                "billing": request.form["billing"],
+                "exit_granted":  True
+    }
+    return patient
 
 if __name__ == '__main__':
     app.run(debug=True,port=4000)
+
+
+
+
