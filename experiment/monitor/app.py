@@ -1,9 +1,10 @@
 import sys
-# sys.path.insert(0,"../../")
 from flask import Flask, jsonify , request
 import requests
+
 import random 
 from flask_cors import CORS
+import time
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -20,8 +21,11 @@ LEADER = "server_1"
 
 @app.route('/send_payment',methods=['POST'])
 def process_payment():
-    print(API_ENDPOINT.format(servers_id[LEADER]) + "/payment")
-    r = requests.post(url = API_ENDPOINT.format(servers_id[LEADER]) + "/payment")
+    try:
+        r = requests.post(url = API_ENDPOINT.format(servers_id[LEADER]) + "/payment", data = request.form)
+    except:
+        time.sleep(2)
+        r = requests.post(url = API_ENDPOINT.format(servers_id[LEADER]) + "/payment", data = request.form)
     return r.content
     
 
