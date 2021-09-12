@@ -51,11 +51,7 @@ def payment(id,name,lastname,email,phone_number,billing,exit_granted):
                 "exit_granted":exit_granted}
     try:
         #r = requests.post(url = MONITOR_URL + "/send_payment", data=patient)
-<<<<<<< HEAD
         response = "enqueued"
-=======
-        response = "hello"
->>>>>>> df9d3fdc793c6ae45bffd9aa6cc133faf2cf4cfc
         args = (patient,)
         voting_pago.apply_async(args=args, queue = 'logs')
         #response = json.loads(r.content)
