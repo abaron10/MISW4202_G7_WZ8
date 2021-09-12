@@ -7,12 +7,18 @@ import random
 import requests
 import json
 import sqlite3
+from celery import Celery
 
 data_factory = Faker()
 MONITOR_URL = "http://127.0.0.1:5000/"
+celery_app = Celery(__name__, broker='redis://localhost:6379/0')
 
 conn = sqlite3.connect('patient_payments.db', check_same_thread=False)
 cur = conn.cursor()
+
+@celery_app.task(name='voting_pago')
+def voting_pago(*args):
+    pass
 
 def create_database():
     cur.execute('DROP TABLE IF EXISTS payments')
@@ -23,7 +29,7 @@ def create_database():
 def run_experiment():
     lis = []
     create_database()
-    for iteration in range(1,230):
+    for iteration in range(1,50):
         lis.append(payment(iteration,
                 data_factory.name().split(" ")[0],
                 data_factory.name().split(" ")[1],
@@ -32,7 +38,6 @@ def run_experiment():
                 random.randint(100000, 900000),
                 False))
     return jsonify(lis)
-
 
 
 def payment(id,name,lastname,email,phone_number,billing,exit_granted):
@@ -45,8 +50,11 @@ def payment(id,name,lastname,email,phone_number,billing,exit_granted):
                 "billing":billing,
                 "exit_granted":exit_granted}
     try:
-        r = requests.post(url = MONITOR_URL + "/send_payment", data=patient)
-        response = json.loads(r.content)
+        #r = requests.post(url = MONITOR_URL + "/send_payment", data=patient)
+        response = "hello"
+        args = (patient,)
+        voting_pago.apply_async(args=args, queue = 'logs')
+        #response = json.loads(r.content)
     except:
         response = "Mistake"
 

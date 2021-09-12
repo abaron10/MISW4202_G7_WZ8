@@ -3,6 +3,6 @@ import threading
 
 def ping_servers():
     verify_life_servers()
-    threading.Timer(0.5,ping_servers).start()
+    threading.Timer(2,ping_servers).start()
 
 ping_servers()

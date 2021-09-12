@@ -1,7 +1,7 @@
 import sys
 from flask import Flask, jsonify , request
 import requests
-
+from celery import Celery
 import random 
 from flask_cors import CORS
 import time
