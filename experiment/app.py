@@ -29,7 +29,7 @@ def create_database():
 def run_experiment():
     lis = []
     create_database()
-    for iteration in range(1,50):
+    for iteration in range(1,20):
         lis.append(payment(iteration,
                 data_factory.name().split(" ")[0],
                 data_factory.name().split(" ")[1],
